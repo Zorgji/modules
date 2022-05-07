@@ -114,27 +114,20 @@ variable "secret_key" {
   description = ""
 }
 
+# variable "credential_type_user" {
+#   default     = "iam_user"
+#   type        = string
+#   description = ""
+# }
 
-variable "create_user_backend_role" {
-  type        = bool
-  default     = true
-  description = ""
-}
-
-variable "credential_type_user" {
-  default     = "iam_user"
-  type        = string
-  description = ""
-}
-
-variable "user_backend_role" {
-  type = map(object({
-    name            = string
-    policy_document = any
-  }))
-  default     = {}
-  description = ""
-}
+# variable "user_backend_role" {
+#   type = map(object({
+#     name            = string
+#     policy_document = any
+#   }))
+#   default     = {}
+#   description = ""
+# }
 
 variable "aws_auth_path" {
   type        = string

@@ -23,7 +23,7 @@ resource "vault_policy" "this" {
   policy   = each.value.policy
 }
 
-# AWS
+## AWS
 resource "vault_auth_backend" "this" {
   count       = var.create_aws_auth_backend ? 1 : 0
   type        = "aws"
@@ -56,18 +56,19 @@ resource "vault_aws_secret_backend_role" "this" {
   role_arns       = each.value.role_arns
 }
 
-resource "vault_aws_secret_backend_role" "user" {
-  for_each        = var.user_backend_role
-  backend         = element(vault_auth_backend.this.*.path, 0)
-  name            = each.value.name
-  credential_type = var.credential_type_user
-  policy_document = each.value.policy_document
-}
+## IAM USER
+# resource "vault_aws_secret_backend_role" "user" {
+#   for_each        = var.user_backend_role
+#   backend         = element(vault_auth_backend.this.*.path, 0)
+#   name            = each.value.name
+#   credential_type = var.credential_type_user
+#   policy_document = each.value.policy_document
+# }
 
-# JWT
+## JWT
 resource "vault_jwt_auth_backend" "this" {
   count        = var.enabled_jwt_backend ? 1 : 0
-  description  = "JWT auth backend for GitLab CI/CD"
+  description  = "JWT Auth backend for GitLab CI/CD"
   path         = var.jwt_path
   bound_issuer = var.bound_issuer
   jwks_url     = "https://gitlab.com/-/jwks"
@@ -84,7 +85,7 @@ resource "vault_jwt_auth_backend_role" "account" {
   bound_claims      = each.value
 }
 
-resource "vault_jwt_auth_backend_role" "this" {
+resource "vault_jwt_auth_backend_role" "secret" {
   for_each          = { for k, v in var.secret_bound_claims : k => v if var.create_secret_role }
   backend           = try(element(vault_jwt_auth_backend.this.*.path, 0), "")
   role_name         = var.secret_role_name
