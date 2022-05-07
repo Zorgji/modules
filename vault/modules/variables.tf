@@ -120,11 +120,13 @@ variable "create_user_backend_role" {
   default     = true
   description = ""
 }
+
 variable "credential_type_user" {
   default     = "iam_user"
   type        = string
   description = ""
 }
+
 variable "user_backend_role" {
   type = map(object({
     name            = string
@@ -135,18 +137,12 @@ variable "user_backend_role" {
 }
 
 variable "aws_auth_path" {
-  # type = map(object({
-  #   path = string
-  # }))
   type        = string
   default     = ""
   description = ""
 }
 
 variable "aws_secret_path" {
-  # type = map(object({
-  #   path = string
-  # }))
   type        = string
   default     = ""
   description = ""
