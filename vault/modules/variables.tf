@@ -11,7 +11,6 @@ variable "create_mountpath" {
 }
 
 variable "vault_mount" {
-  # type        = string
   type = map(object({
     path        = string
     type        = string
@@ -20,12 +19,6 @@ variable "vault_mount" {
   default     = {}
   description = ""
 }
-
-# variable "mountpath" {
-#   default     = ""
-#   type        = string
-#   description = "value"
-# }
 
 variable "create_generic_secret" {
   default     = true
@@ -140,38 +133,7 @@ variable "user_backend_role" {
     name            = string
     policy_document = any
   }))
-  default = {
-    "ec2" = {
-      name            = "ec2"
-      policy_document = <<EOT
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": "ec2:*",
-      "Resource": "*"
-    }
-  ]
-}
-EOT
-    },
-    "sec-eng" = {
-      name            = "deployer"
-      policy_document = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": "iam:*",
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-    },
-  }
+  default = {}
   description = ""
 }
 
@@ -314,24 +276,6 @@ variable "infra_token_policies" {
   type        = list(string)
   description = ""
 }
-
-# variable "acc_bound_claims" {
-#   type        = map(string)
-#   default = {
-#     "key" = "value",
-#     "key" = "value"
-#   }
-#   description = ""
-# }
-
-# variable "infra_bound_claims" {
-#   type        = map(string)
-#   default = {
-#     "key" = "value",
-#     "key" = "value"
-#   }
-#   description = ""
-# }
 
 variable "acc_bound_claims" {
   type = map(object({
