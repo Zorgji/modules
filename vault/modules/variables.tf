@@ -133,7 +133,7 @@ variable "user_backend_role" {
     name            = string
     policy_document = any
   }))
-  default = {}
+  default     = {}
   description = ""
 }
 
