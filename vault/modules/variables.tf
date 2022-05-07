@@ -33,11 +33,9 @@ variable "what" {
 }
 
 variable "generic_secret" {
-  # type        = string
   type = map(object({
     path      = string
     data_json = any
-    # sts_role   = string
   }))
   default     = {}
   description = ""
@@ -45,8 +43,7 @@ variable "generic_secret" {
 
 variable "vault_auth_backend" {
   type = map(object({
-    path = string
-    # type = string
+    path        = string
     description = string
   }))
   default     = {}

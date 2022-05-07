@@ -73,7 +73,7 @@ resource "vault_jwt_auth_backend" "this" {
   jwks_url     = "https://gitlab.com/-/jwks"
 }
 
-resource "vault_jwt_auth_backend_role" "this" {
+resource "vault_jwt_auth_backend_role" "account" {
   for_each          = { for k, v in var.acc_bound_claims : k => v if var.create_acc_role }
   backend           = try(element(vault_jwt_auth_backend.this.*.path, 0), "")
   role_name         = var.acc_role_name
@@ -84,7 +84,7 @@ resource "vault_jwt_auth_backend_role" "this" {
   bound_claims      = each.value
 }
 
-resource "vault_jwt_auth_backend_role" "infra" {
+resource "vault_jwt_auth_backend_role" "this" {
   for_each          = { for k, v in var.infra_bound_claims : k => v if var.create_infra_role }
   backend           = try(element(vault_jwt_auth_backend.this.*.path, 0), "")
   role_name         = var.infra_role_name
