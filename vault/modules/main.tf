@@ -85,10 +85,10 @@ resource "vault_jwt_auth_backend_role" "account" {
 }
 
 resource "vault_jwt_auth_backend_role" "this" {
-  for_each          = { for k, v in var.infra_bound_claims : k => v if var.create_infra_role }
+  for_each          = { for k, v in var.secret_bound_claims : k => v if var.create_secret_role }
   backend           = try(element(vault_jwt_auth_backend.this.*.path, 0), "")
-  role_name         = var.infra_role_name
-  token_policies    = var.infra_token_policies
+  role_name         = var.secret_role_name
+  token_policies    = var.secret_token_policies
   bound_claims_type = "glob"
   user_claim        = "user_email"
   role_type         = "jwt"

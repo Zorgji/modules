@@ -234,7 +234,7 @@ variable "create_acc_role" {
   description = ""
 }
 
-variable "create_infra_role" {
+variable "create_secret_role" {
   type        = bool
   default     = false
   description = ""
@@ -258,13 +258,13 @@ variable "acc_token_policies" {
   description = ""
 }
 
-variable "infra_role_name" {
+variable "secret_role_name" {
   default     = ""
   type        = string
   description = ""
 }
 
-variable "infra_token_policies" {
+variable "secret_token_policies" {
   default     = [""]
   type        = list(string)
   description = ""
@@ -280,7 +280,7 @@ variable "acc_bound_claims" {
   description = ""
 }
 
-variable "infra_bound_claims" {
+variable "secret_bound_claims" {
   type = map(object({
     project_id = string
     ref        = string
