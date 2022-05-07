@@ -209,11 +209,7 @@ variable "create_sts_role" {
   description = ""
 }
 
-variable "create_secret_role" {
-  default     = false
-  type        = bool
-  description = ""
-}
+
 
 # JWT
 variable "enabled_jwt_backend" {
