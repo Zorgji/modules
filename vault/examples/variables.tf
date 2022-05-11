@@ -1,6 +1,19 @@
+variable "vault_addr" {
+  type        = string
+  default     = ""
+  description = "Vault url"
+}
+
+variable "token" {
+  type        = string
+  default     = ""
+  description = "Token to manage Vault"
+}
+
+## Secrets
 variable "create_mountpath" {
-  default     = true
   type        = bool
+  default     = false
   description = "Enable KV-V2 secret engine path"
 }
 
@@ -12,26 +25,26 @@ variable "vault_mount" {
   }))
   default = {
     "key" = {
-      description = "value"
-      path        = "value"
-      type        = "value"
+      description = "My Secrets"
+      path        = "default"
+      type        = "kv-v2"
     }
   }
   description = "KV-V2 secret engine path"
 }
 
 variable "create_generic_secret" {
-  default     = true
   type        = bool
+  default     = true
   description = "Enable Generic Secrets or not"
 }
 
 variable "generic_secret" {
   type = map(object({
-    path                = string
-    disable_read        = bool
-    delete_all_versions = bool
     data_json           = any
+    delete_all_versions = bool
+    disable_read        = bool
+    path                = string
   }))
   default = {
     "key1" = {
@@ -40,7 +53,7 @@ variable "generic_secret" {
       EOF
       delete_all_versions = false
       disable_read        = false
-      path                = "default1"
+      path                = "default1/network2"
     },
     "key2" = {
       data_json           = <<EOF
@@ -48,10 +61,9 @@ variable "generic_secret" {
       EOF
       delete_all_versions = false
       disable_read        = false
-      path                = "default2"
-    },
+      path                = "default2/network2"
+    }
   }
-  description = "Key/Value store"
 }
 
 variable "create_policy" {
@@ -66,50 +78,53 @@ variable "vault_policy" {
     policy = any
   }))
   default = {
-    "key" = {
-      name   = "default"
+    "qa" = {
+      name   = "network-read-qa"
       policy = <<EOF
-      ## Policy Sample
-      path "default/data/*"
+      ## Policy for only reading QA secret values
+      path "default/data/qa/*"
+      {
+          capabilities = ["read"]
+      }
+      EOF
+    },
+    "uat" = {
+      name   = "network-read-uat"
+      policy = <<EOF
+      ## Policy for only reading UAT secret values
+      path "default/data/uat/*"
       {
           capabilities = ["read"]
       }
       EOF
     }
   }
-  description = "Policy to read secret by path"
+  description = "Policy to read Secrets by path"
 }
 
+## Assumed Role
+variable "access_key" {
+  default     = ""
+  type        = string
+  description = "AWS access key"
+}
 
-## ASSUMED ROLE
+variable "secret_key" {
+  default     = ""
+  type        = string
+  description = "AWS secret key"
+}
+
 variable "create_aws_auth_backend" {
   default     = false
   type        = bool
-  description = "Enable AWS Auth method or not"
-}
-
-variable "aws_auth_path" {
-  type        = string
-  default     = ""
-  description = "AWS Authentication Methods path"
+  description = "Enable AWS Auth method or not in Vault"
 }
 
 variable "create_aws_secret_backend" {
   default     = false
   type        = bool
-  description = "Enable AWS Secret Backend or not for Vault"
-}
-
-variable "access_key" {
-  type        = string
-  default     = "value"
-  description = "AWS Assumed Role access key"
-}
-
-variable "secret_key" {
-  type        = string
-  default     = "value"
-  description = "AWS Assumed Role secret key"
+  description = "Enable AWS Secret Backend or not in Vault"
 }
 
 variable "default_ttl" {
@@ -124,6 +139,12 @@ variable "max_ttl" {
   description = "Maximum Time To Live for Assumed role"
 }
 
+variable "aws_auth_path" {
+  type        = string
+  default     = ""
+  description = "AWS Authentication Methods path"
+}
+
 variable "aws_secret_path" {
   type        = string
   default     = ""
@@ -132,7 +153,7 @@ variable "aws_secret_path" {
 
 variable "create_auth_backend_role" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable STS role or not for Vault"
 }
 
@@ -142,9 +163,13 @@ variable "auth_backend_role" {
     sts_role   = string
   }))
   default = {
-    "key" = {
+    "ops" = {
       account_id = 123123123123
-      sts_role   = "ROLE_ARN"
+      sts_role   = "arn:aws:iam::123123123123:role/automation-role"
+    },
+    "qa" = {
+      account_id = 234234234234
+      sts_role   = "arn:aws:iam::234234234234:role/automation-role"
     }
   }
   description = "Role that will be used by Vault authenticating AWS"
@@ -152,7 +177,7 @@ variable "auth_backend_role" {
 
 variable "create_secret_backend_role" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable a role on an AWS Secret Backend or not for Vault"
 }
 
@@ -162,12 +187,20 @@ variable "secret_backend_role" {
     role_arns = list(string)
   }))
   default = {
-    "key" = {
-      name      = "default"
-      role_arns = ["ROLE_ARN"]
+    "ops" = {
+      name      = "ops"
+      role_arns = ["arn:aws:iam::533322910785:role/automation-role"]
+    },
+    "qa" = {
+      name      = "qa"
+      role_arns = ["arn:aws:iam::328647089605:role/automation-role"]
+    },
+    "stg" = {
+      name      = "stg"
+      role_arns = ["arn:aws:iam::193357654123:role/automation-role"]
     }
   }
-  description = "Create and use STS Assumed Role by Vault performing necessary actions respectively"
+  description = "If enabled, Create and use STS Assumed Role by Vault performing necessary actions respectively"
 }
 
 variable "credential_type" {
@@ -182,36 +215,29 @@ variable "region" {
   description = "Region that Vault residing"
 }
 
-
 ## IAM User
+variable "access_key_user" {
+  type        = string
+  default     = ""
+  description = "AWS access key"
+}
+
+variable "secret_key_user" {
+  type        = string
+  default     = ""
+  description = "AWS secrert key"
+}
+
 variable "create_aws_auth_backend_user" {
   type        = bool
   default     = true
   description = "Enable AWS Auth method or not"
 }
 
-variable "aws_auth_path_user" {
-  type        = string
-  default     = "value"
-  description = "AWS Authentication Methods path"
-}
-
 variable "create_aws_secret_backend_user" {
   type        = bool
   default     = false
   description = "Enable AWS Secret Backend or not for Vault"
-}
-
-variable "access_key_user" {
-  type        = string
-  default     = "value"
-  description = "AWS access key"
-}
-
-variable "secret_key_user" {
-  type        = string
-  default     = "value"
-  description = "AWS secret key"
 }
 
 variable "default_ttl_user" {
@@ -226,16 +252,16 @@ variable "max_ttl_user" {
   description = "Maximum Time To Live"
 }
 
+variable "aws_auth_path_user" {
+  type        = string
+  default     = "account_b"
+  description = "AWS Authentication Methods path"
+}
+
 variable "aws_secret_path_user" {
   type        = string
   default     = ""
   description = "AWS Secret engine path for IAM User"
-}
-
-variable "region_user" {
-  type        = string
-  default     = "us-east-1"
-  description = "Region that Vault residing"
 }
 
 variable "create_auth_backend_role_user" {
@@ -244,15 +270,15 @@ variable "create_auth_backend_role_user" {
   description = "Enable STS role or not on Vault"
 }
 
-variable "auth_backend_role_user" {
+variable "auth_backend_role_user" { # If enabled, Role that is used by Vault authenticating AWS!
   type = map(object({
     account_id = number
     sts_role   = string
   }))
   default = {
-    "key" = {
+    "acc_b" = {
       account_id = 123123123123
-      sts_role   = "ROLE_ARN"
+      sts_role   = "arn:aws:iam::123123123123:role/automation-role"
     }
   }
   description = "If enabled, This Role that will be used by Vault authenticating and performing necessary actions"
@@ -274,25 +300,31 @@ variable "secret_backend_role_user" {
       name            = "ec2-user"
       policy_document = <<EOT
       {
-        "Version": "2012-10-17",
-        "Statement": [
+      "Version": "2012-10-17",
+      "Statement": [
           {
-            "Effect": "Allow",
-            "Action": "ec2:*",
-            "Resource": "*"
+          "Effect": "Allow",
+          "Action": "ec2:*",
+          "Resource": "*"
           }
-        ]
+      ]
       }
       EOT
     }
   }
-  description = "IAM User with defined IAM permission policy respectively"
+  description = "IAM User with defined IAM permission policy"
 }
 
 variable "credential_type_user" {
-  type        = string
   default     = "iam_user"
+  type        = string
   description = "AWS IAM User type"
+}
+
+variable "region_user" {
+  default     = "us-east-1"
+  type        = string
+  description = "Region that Vault residing"
 }
 
 
@@ -305,14 +337,8 @@ variable "enabled_jwt_backend" {
 
 variable "jwt_path" {
   type        = string
-  default     = "default"
-  description = "JWT Authentication path"
-}
-
-variable "bound_issuer" {
-  type        = string
-  default     = ""
-  description = "The value against which to match the iss claim in a JWT"
+  default     = "jwt"
+  description = "JWT path"
 }
 
 variable "create_acc_role" {
@@ -321,59 +347,73 @@ variable "create_acc_role" {
   description = "Enable Account JWT Auth Backend Role or not"
 }
 
-variable "acc_bound_claims" {
-  type = map(object({
-    role_name    = string
-    bound_claims = map(string)
-  }))
-  default = {
-    "key" = {
-      bound_claims = {
-        "key" = "value"
-      }
-      role_name = "value"
-    }
-  }
-  description = "JWT/OIDC auth backend role for AWS Account in a Vault server"
-}
-
-variable "acc_token_policies" {
-  type        = list(string)
-  default     = [""]
-  description = "AWS Accounts policy name"
-}
-
 variable "create_secret_role" {
   type        = bool
   default     = false
   description = "Enable Secrets JWT Auth Backend Role or not"
 }
 
-variable "secret_role_name" {
+variable "bound_issuer" {
   type        = string
-  default     = "value"
-  description = "Secret role name"
+  default     = "gitlab.com"
+  description = "The value against which to match the iss claim in a JWT"
 }
 
-variable "secret_bound_claims" {
+variable "acc_role_name" {
+  type        = string
+  default     = "ops"
+  description = "Accounts role name"
+}
+
+variable "acc_token_policies" {
+  type = list(string)
+  default = [
+    "ops",
+    "qa"
+  ]
+  description = "Accounts policy name"
+}
+
+variable "acc_bound_claims" {
   type = map(object({
-    role_name    = string
-    bound_claims = map(string)
+    project_id = number
+    ref        = string
+    ref_type   = string
   }))
   default = {
-    "key" = {
-      bound_claims = {
-        "key" = "value"
-      }
-      role_name = "value"
+    "aws_secret_engine" = {
+      project_id = 12312312
+      ref        = "main,releae/*"
+      ref_type   = "branch"
     }
   }
-  description = "JWT/OIDC auth backend role for Secrets values in a Vault server"
+  description = "JWT/OIDC auth backend role for AWS Account in a Vault server"
+}
+
+variable "secret_role_name" {
+  type        = string
+  default     = "ops"
+  description = "Secret role name"
 }
 
 variable "secret_token_policies" {
   type        = list(string)
-  default     = ["value"]
+  default     = ["ops"]
   description = "Secrets policy name"
 }
 
+variable "secret_bound_claims" {
+  type = map(object({
+    project_id = number
+    ref        = string
+    ref_type   = string
+  }))
+  default = {
+    "key" = {
+      project_id = 12312312
+      ref        = "main,release/*"
+      ref_type   = "branch"
+    }
+  }
+  description = "JWT/OIDC auth backend role for Secrets values in a Vault server"
+}
