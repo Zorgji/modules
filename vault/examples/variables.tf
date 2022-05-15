@@ -359,12 +359,6 @@ variable "bound_issuer" {
   description = "The value against which to match the iss claim in a JWT"
 }
 
-variable "acc_role_name" {
-  type        = string
-  default     = "ops"
-  description = "Accounts role name"
-}
-
 variable "acc_token_policies" {
   type = list(string)
   default = [
@@ -376,15 +370,15 @@ variable "acc_token_policies" {
 
 variable "acc_bound_claims" {
   type = map(object({
-    project_id = number
-    ref        = string
-    ref_type   = string
+    role_name    = string
+    bound_claims = map(string)
   }))
   default = {
-    "aws_secret_engine" = {
-      project_id = 12312312
-      ref        = "main,releae/*"
-      ref_type   = "branch"
+    "key" = {
+      bound_claims = {
+        "key" = "value"
+      }
+      role_name = "value"
     }
   }
   description = "JWT/OIDC auth backend role for AWS Account in a Vault server"
@@ -404,15 +398,15 @@ variable "secret_token_policies" {
 
 variable "secret_bound_claims" {
   type = map(object({
-    project_id = number
-    ref        = string
-    ref_type   = string
+    role_name    = string
+    bound_claims = map(string)
   }))
   default = {
     "key" = {
-      project_id = 12312312
-      ref        = "main,release/*"
-      ref_type   = "branch"
+      bound_claims = {
+        "key" = "value"
+      }
+      role_name = "value"
     }
   }
   description = "JWT/OIDC auth backend role for Secrets values in a Vault server"
