@@ -23,6 +23,7 @@ provider "vault" {
 
 module "vault" {
   source                = "git::github.com/Zorgji/modules.git//vault/modules"
+  # source                = "git::github.com/Zorgji/modules.git//vault/modules?ref=v1.0.0" ## using specific tags
   create_mountpath      = var.create_mountpath
   vault_mount           = var.vault_mount
   create_generic_secret = var.create_generic_secret
