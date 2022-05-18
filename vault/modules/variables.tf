@@ -349,12 +349,6 @@ variable "create_secret_role" {
   description = "Enable Secrets JWT Auth Backend Role or not"
 }
 
-variable "secret_role_name" {
-  type        = string
-  default     = "value"
-  description = "Secret role name"
-}
-
 variable "secret_bound_claims" {
   type = map(object({
     role_name    = string
