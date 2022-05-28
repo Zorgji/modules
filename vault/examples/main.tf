@@ -22,8 +22,8 @@ provider "vault" {
 
 
 module "vault" {
-  source                = "git::github.com/Zorgji/modules.git//vault/modules"
-  # source                = "git::github.com/Zorgji/modules.git//vault/modules?ref=v1.0.0" ## using specific tags
+  # source                = "git::github.com/Zorgji/modules.git//vault/modules"
+  source                = "git::github.com/Zorgji/modules.git//vault/modules?ref=v1.0.0" ## using specific tags
   create_mountpath      = var.create_mountpath
   vault_mount           = var.vault_mount
   create_generic_secret = var.create_generic_secret
@@ -62,7 +62,6 @@ module "vault" {
   secret_backend_role_user        = var.secret_backend_role_user
   credential_type_user            = var.credential_type_user
   region_user                     = var.region_user
-
 
   ## JWT
   enabled_jwt_backend   = true
