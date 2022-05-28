@@ -5,7 +5,7 @@ module "ops_x_qa" {
     aws.accepter  = aws.accept
   }
 
-  source        = "git::github.com/Zorgji/modules.git//vault/modules?ref=v1.0.0" ## using specific tags
+  source        = "git::github.com/Zorgji/modules.git//pcx/modules?ref=v1.0.0" ## using specific tags
   request_s3    = var.request_s3
   request_state = var.request_state
   accept_s3     = var.accept_s3
