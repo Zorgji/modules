@@ -68,13 +68,25 @@ resource "aws_vpc_peering_connection_options" "accept" {
 }
 
 ## Add routes vice versa
-resource "aws_route" "request_route" {
+resource "aws_route" "request_public_route" {
+  provider                  = aws.requester
+  route_table_id            = local.requestnetworkstate.outputs.public_route_table_ids.value[0]
+  destination_cidr_block    = local.acceptnetworkstate.outputs.vpc_cidr_block.value
+  vpc_peering_connection_id = aws_vpc_peering_connection.request_x_accept.id
+}
+resource "aws_route" "request_private_route" {
   provider                  = aws.requester
   route_table_id            = local.requestnetworkstate.outputs.private_route_table_ids.value[0]
   destination_cidr_block    = local.acceptnetworkstate.outputs.vpc_cidr_block.value
   vpc_peering_connection_id = aws_vpc_peering_connection.request_x_accept.id
 }
-resource "aws_route" "accept_route" {
+resource "aws_route" "accept_public_route" {
+  provider                  = aws.accepter
+  route_table_id            = local.acceptnetworkstate.outputs.public_route_table_ids.value[0]
+  destination_cidr_block    = local.requestnetworkstate.outputs.vpc_cidr_block.value
+  vpc_peering_connection_id = aws_vpc_peering_connection.request_x_accept.id
+}
+resource "aws_route" "accept_private_route" {
   provider                  = aws.accepter
   route_table_id            = local.acceptnetworkstate.outputs.private_route_table_ids.value[0]
   destination_cidr_block    = local.requestnetworkstate.outputs.vpc_cidr_block.value
