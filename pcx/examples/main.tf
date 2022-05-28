@@ -1,4 +1,4 @@
-module "ops_x_qa" {
+module "pcx" {
 
   providers = {
     aws.requester = aws.request
