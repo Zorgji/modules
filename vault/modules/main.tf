@@ -71,7 +71,7 @@ resource "vault_aws_secret_backend" "user" {
   default_lease_ttl_seconds = var.default_ttl_user
   max_lease_ttl_seconds     = var.max_ttl_user
   path                      = var.aws_secret_path_user
-  region                    = var.region
+  region                    = var.region_user
 }
 
 resource "vault_aws_auth_backend_sts_role" "user" {
