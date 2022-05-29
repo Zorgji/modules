@@ -69,10 +69,8 @@ module "vault" {
   create_acc_role       = true
   create_secret_role    = true
   bound_issuer          = var.bound_issuer
-  acc_role_name         = var.acc_role_name
   acc_token_policies    = var.acc_token_policies
   acc_bound_claims      = var.acc_bound_claims
-  secret_role_name      = var.secret_role_name
   secret_token_policies = var.secret_token_policies
   secret_bound_claims   = var.secret_bound_claims
 }
