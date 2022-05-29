@@ -4,4 +4,4 @@
 
 ## In `Account B's ap-southeast-1`, Create a VPC in and its state in `S3` in `ap-southeast-1` region altogether
 
-## Create a `PCX` by replacing `tfvars` and desired values
+## Create a `PCX` by replacing `tfvars` and other necessary values

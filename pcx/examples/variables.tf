@@ -27,3 +27,13 @@ variable "accept_region" {
   default     = ""
   description = ""
 }
+
+variable "tags" {
+  type = map(string)
+  validation {
+    condition     = can(var.tags["Name"])
+    error_message = "At least Name tag is required!"
+  }
+  default     = {}
+  description = ""
+}

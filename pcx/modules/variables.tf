@@ -30,8 +30,12 @@ variable "accept_region" {
 
 variable "tags" {
   type = map(string)
+  validation {
+    condition     = can(var.tags["Name"])
+    error_message = "At least Name tag is required!"
+  }
   default = {
-    KEY = "VALUES"
+    Name = "Account A to Account B"
   }
   description = ""
 }

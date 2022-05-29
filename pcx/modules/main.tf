@@ -19,7 +19,6 @@ locals {
   requestnetworkstate = jsondecode("${data.aws_s3_object.request_network_state.body}")
 }
 
-
 data "aws_s3_object" "accept_network_state" {
   provider = aws.accepter
   bucket   = var.accept_s3
@@ -66,6 +65,7 @@ resource "aws_vpc_peering_connection_options" "accept" {
     allow_remote_vpc_dns_resolution = true
   }
 }
+
 
 ## Add routes vice versa
 resource "aws_route" "request_public_route" {
