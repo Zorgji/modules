@@ -64,10 +64,10 @@ module "vault" {
   region_user                     = var.region_user
 
   ## JWT
-  enabled_jwt_backend   = true
-  jwt_path              = "jwt"
-  create_acc_role       = true
-  create_secret_role    = true
+  enabled_jwt_backend   = var.enabled_jwt_backend
+  jwt_path              = var.jwt_path
+  create_acc_role       = var.create_acc_role
+  create_secret_role    = var.create_secret_role
   bound_issuer          = var.bound_issuer
   acc_token_policies    = var.acc_token_policies
   acc_bound_claims      = var.acc_bound_claims
