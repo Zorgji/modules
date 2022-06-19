@@ -31,6 +31,10 @@ module "vault" {
   create_policy         = var.create_policy
   vault_policy          = var.vault_policy
 
+  ## Userpass
+  create_userpass = var.create_userpass
+  users_path      = var.users_path
+
   ## Assume Role
   access_key                 = var.access_key
   secret_key                 = var.secret_key

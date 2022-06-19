@@ -1,8 +1,8 @@
 region = "us-east-1"
 
-# KV
+## KV
 vault_addr       = "https://myvault.com"
-token            = "s.asdfasdASDFASDFZXCV"
+token            = "hvs.asdfasdASDFASDFZXCV"
 create_mountpath = true
 vault_mount = {
   "qa" = {
@@ -17,6 +17,29 @@ vault_mount = {
   }
 }
 
+## USERPASS
+create_userpass = true
+users_path = {
+  "user" = {
+    data_json = <<EOT
+    {
+      "policies": ["reader"],
+      "password": "reader"
+    }
+    EOT
+    path      = "auth/userpass/users/reader"
+  },
+  "user2" = {
+    data_json = <<EOT
+    {
+      "policies": ["admin"],
+      "password": "admin"
+    }
+    EOT
+    path      = "auth/userpass/users/admin"
+  }
+}
+
 create_generic_secret = true
 generic_secret = {
   "qa" = {
@@ -25,38 +48,38 @@ generic_secret = {
     delete_all_versions = false
     data_json           = <<EOF
     {
-    "availability_zones": [
-        "us-east-1a",
-        "us-east-1b",
-        "us-east-1c"
-    ],
-    "aws_region": "us-east-1",
-    "create_database_internet_gateway_route": true,
-    "create_database_subnet_group": true,
-    "create_database_subnet_route_table": true,
-    "database_subnets": [
-        "10.0.144.0/20",
-        "10.0.160.0/20",
-        "10.0.176.0/20"
-    ],
-    "elasticache_subnets": [
-        "10.0.96.0/20",
-        "10.0.112.0/20",
-        "10.0.128.0/20"
-    ],
-    "environment": "qa",
-    "private_subnets": [
-        "10.0.48.0/20",
-        "10.0.64.0/20",
-        "10.0.80.0/20"
-    ],
-    "public_subnets": [
-        "10.0.0.0/20",
-        "10.0.16.0/20",
-        "10.0.32.0/20"
-    ],
-    "vpc_cidr": "10.0.0.0/16",
-    "vpc_name": "env-qa"
+      "availability_zones": [
+          "us-east-1a",
+          "us-east-1b",
+          "us-east-1c"
+      ],
+      "aws_region": "us-east-1",
+      "create_database_internet_gateway_route": true,
+      "create_database_subnet_group": true,
+      "create_database_subnet_route_table": true,
+      "database_subnets": [
+          "10.0.144.0/20",
+          "10.0.160.0/20",
+          "10.0.176.0/20"
+      ],
+      "elasticache_subnets": [
+          "10.0.96.0/20",
+          "10.0.112.0/20",
+          "10.0.128.0/20"
+      ],
+      "environment": "qa",
+      "private_subnets": [
+          "10.0.48.0/20",
+          "10.0.64.0/20",
+          "10.0.80.0/20"
+      ],
+      "public_subnets": [
+          "10.0.0.0/20",
+          "10.0.16.0/20",
+          "10.0.32.0/20"
+      ],
+      "vpc_cidr": "10.0.0.0/16",
+      "vpc_name": "env-qa"
     }
     EOF
   },
@@ -66,38 +89,38 @@ generic_secret = {
     delete_all_versions = false
     data_json           = <<EOF
     {
-    "availability_zones": [
-        "us-east-1a",
-        "us-east-1b",
-        "us-east-1c"
-    ],
-    "aws_region": "us-east-1",
-    "create_database_internet_gateway_route": true,
-    "create_database_subnet_group": true,
-    "create_database_subnet_route_table": true,
-    "database_subnets": [
-        "192.168.144.0/20",
-        "192.168.160.0/20",
-        "192.168.176.0/20"
-    ],
-    "elasticache_subnets": [
-        "192.168.96.0/20",
-        "192.168.112.0/20",
-        "192.168.128.0/20"
-    ],
-    "environment": "uat",
-    "private_subnets": [
-        "192.168.48.0/20",
-        "192.168.64.0/20",
-        "192.168.80.0/20"
-    ],
-    "public_subnets": [
-        "192.168.0.0/20",
-        "192.168.16.0/20",
-        "192.168.32.0/20"
-    ],
-    "vpc_cidr": "192.168.0.0/16",
-    "vpc_name": "env-uat"
+      "availability_zones": [
+          "us-east-1a",
+          "us-east-1b",
+          "us-east-1c"
+      ],
+      "aws_region": "us-east-1",
+      "create_database_internet_gateway_route": true,
+      "create_database_subnet_group": true,
+      "create_database_subnet_route_table": true,
+      "database_subnets": [
+          "192.168.144.0/20",
+          "192.168.160.0/20",
+          "192.168.176.0/20"
+      ],
+      "elasticache_subnets": [
+          "192.168.96.0/20",
+          "192.168.112.0/20",
+          "192.168.128.0/20"
+      ],
+      "environment": "uat",
+      "private_subnets": [
+          "192.168.48.0/20",
+          "192.168.64.0/20",
+          "192.168.80.0/20"
+      ],
+      "public_subnets": [
+          "192.168.0.0/20",
+          "192.168.16.0/20",
+          "192.168.32.0/20"
+      ],
+      "vpc_cidr": "192.168.0.0/16",
+      "vpc_name": "env-uat"
     }
     EOF
   }
@@ -120,7 +143,7 @@ vault_policy = {
       ## Policy for only reading UAT secret values
       path "uat/data/*"
       {
-          capabilities = ["read"]
+        capabilities = ["read"]
       }
       EOF
   },
@@ -130,7 +153,27 @@ vault_policy = {
       ## Policy for only reading AWS CREDS
       path "aws/creds/account_b"
       {
-          capabilities = ["read"]
+        capabilities = ["read"]
+      }
+      EOF
+  },
+  "reader" = {
+    name   = "reader"
+    policy = <<EOF
+      ## Reader Policy
+      path "*"
+      {
+        capabilities = ["read"]
+      }
+      EOF
+  },
+  "admin" = {
+    name   = "admin"
+    policy = <<EOF
+      ## Policy for only reading operations tfvars
+      path "*"
+      {
+        capabilities = ["create", "read", "update", "delete", "list", "sudo"]
       }
       EOF
   }
@@ -218,7 +261,6 @@ secret_backend_role = {
 credential_type = "assumed_role"
 
 
-
 ## IAM USER
 access_key_user                = "ASDFASDFGSHDASDFAS?ERF"
 secret_key_user                = "asdfasda4afsefaw4awefaXEfaASDF"
@@ -238,17 +280,17 @@ secret_backend_role_user = {
   "ec2-user" = {
     name            = "ec2-user"
     policy_document = <<EOT
-{
-  "Version": "2012-10-17",
-  "Statement": [
     {
-      "Effect": "Allow",
-      "Action": "ec2:*",
-      "Resource": "*"
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Action": "ec2:*",
+          "Resource": "*"
+        }
+      ]
     }
-  ]
-}
-EOT
+    EOT
   }
 }
 credential_type_user = "iam_user"

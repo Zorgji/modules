@@ -22,6 +22,21 @@ resource "vault_policy" "this" {
   policy   = each.value.policy
 }
 
+## USERPASS
+resource "vault_auth_backend" "userpass" {
+  count       = var.create_userpass ? 1 : 0
+  type        = "userpass"
+  description = "Login with Username/Password"
+}
+
+resource "vault_generic_endpoint" "users" {
+  for_each             = { for k, v in var.users_path : k => v if var.create_userpass }
+  depends_on           = [vault_auth_backend.userpass]
+  path                 = each.value.path
+  ignore_absent_fields = true
+  data_json            = each.value.data_json
+}
+
 ## ASSUMED ROLE
 resource "vault_auth_backend" "this" {
   count       = var.create_aws_auth_backend ? 1 : 0
